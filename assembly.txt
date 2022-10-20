@@ -36,6 +36,16 @@ mask_one:
  xor x3, x7, x3		# x7 OR x3 will change selected word to 0x0 in x3. 
  jalr x0, 0(x1)	# return
 
+mask_two:
+ addi x9,x0, 0xf	  # Add f to x7 register
+ addi x10, x0, 0   # Clear the counter
+ loop2:
+  slli x9, x9, 4  # Shift x7 left logically by 4 bits.
+  addi x10,x10,1	  # Increment the counter
+  bne x10, x6, loop2	# If x10 (the counter) does not equal x6 (the desired position), loop again
+ and x9, x9, x5		# x9 AND x5 should copy out the word in position desired from x5 to x9.
+ xor x9, x9, x5		# x9 OR x5 will change selected word to 0x0 in x5. 
+ jalr x0, 0(x1)	# return
  
 setup:
  lui x5, 0xb01df
