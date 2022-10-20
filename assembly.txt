@@ -1,0 +1,47 @@
+# RISC-V assembly program
+# swapX3DigitX4WithX5DigitX6
+# Anthony Bird, Luke Canny Oct 2022
+# 
+# Using a range of approaches, which impact 
+#   no of instructions
+#   no of cycles to execute
+#
+# Function setup initialises x3, x4, x5, x6 registers
+# 
+# Register 		Use
+#  x3 			 Source for first data
+#  x4            Value stored indicates position in x3 for swap.
+#  x5            Store the second data
+#  x6 			 Value stored indicates position in x5 for swap.
+#  x7            counter register
+
+
+main: 
+ jal  x1, setup
+ #                       No instructions          No Cycles
+ # jal  x1, srr_mask 	  	3						3
+ # jal  x1, srli_mask		5						dependent on x4
+ # jal  x1, slli_srli       5                       5
+ # jal  x1, slli_mask_srl   8                       dependent on x4
+1b: jal x0, 1b    # loop forever 
+
+mask_one:
+ addi x7,x0, 0xf	  # Add f to x7 register
+ addi x8, x0, 0   # Clear the counter
+ loop1:
+  slli x7, x7, 4  # Shift x7 left logically by 4 bits.
+  addi x8,x8,1	  # Increment the counter
+  bne x8, x4, loop1	# If x8 (the counter) does not equal x4 (the desired position), loop again
+ and x7, x7, x3		# x7 AND x3 should copy out the word in position desired from x3 to x7.
+ xor x3, x7, x3		# x7 OR x3 will change selected word to 0x0 in x3. 
+ jalr x0, 0(x1)	# return
+
+ 
+setup:
+ lui x5, 0xb01df
+ addi x5, x5, 0xce	# x5 = 0xb01df0ce
+ addi x4, x0, 5		# Selecting position 5 word
+ lui x3, 0xb1ade	# x3 = b1ade000
+ addi x6, x0, 3		# Selecting position 3 word
+ 
+ jalr x0, 0(x1)   # return
