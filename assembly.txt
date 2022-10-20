@@ -18,6 +18,8 @@
 
 main: 
  jal  x1, setup
+ jal x1, mask_one
+ jal x1, mask_two
  #                       No instructions          No Cycles
  # jal  x1, srr_mask 	  	3						3
  # jal  x1, srli_mask		5						dependent on x4
@@ -44,7 +46,7 @@ mask_two:
   addi x10,x10,1	  # Increment the counter
   bne x10, x6, loop2	# If x10 (the counter) does not equal x6 (the desired position), loop again
  and x9, x9, x5		# x9 AND x5 should copy out the word in position desired from x5 to x9.
- xor x9, x9, x5		# x9 OR x5 will change selected word to 0x0 in x5. 
+ xor x5, x9, x5		# x9 OR x5 will change selected word to 0x0 in x5. 
  jalr x0, 0(x1)	# return
  
 setup:
