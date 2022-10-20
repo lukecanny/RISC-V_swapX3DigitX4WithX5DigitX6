@@ -7,13 +7,7 @@
 #   no of cycles to execute
 #
 # Function setup initialises x3, x4, x5, x6 registers
-# 
-# Register 		Use
-#  x3 			 Source for first data
-#  x4            Value stored indicates position in x3 for swap.
-#  x5            Store the second data
-#  x6 			 Value stored indicates position in x5 for swap.
-#  x7            counter register
+
 
 
 main:
@@ -92,7 +86,6 @@ greaterThanSwap:
   bne x12, x11, loop6		# If x10 (the counter) does not equal x6 (the desired position), loop again
  or x5,x5,x7				# Inserting nibble into x5.
  jalr x0, 0(x1)				# return
- 
  
  
 setup:
