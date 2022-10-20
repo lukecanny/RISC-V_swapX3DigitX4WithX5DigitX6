@@ -69,13 +69,13 @@ lessThanSwap:
  loop3:
   srli x9, x9, 4  # Shift x7 left logically by 4 bits.
   addi x12,x12,1	  # Increment the counter
-  bne x12, x6, loop3	# If x10 (the counter) does not equal x6 (the desired position), loop again
+  bne x12, x11, loop3	# If x10 (the counter) does not equal x6 (the desired position), loop again
  or x3, x3, x9		# Adding value to x3.
  addi x12, x0, 0   # Clear the counter
  loop4:
   slli x7, x7, 4  # Shift x7 left logically by 4 bits.
   addi x12,x12,1	  # Increment the counter
-  bne x12, x6, loop4	# If x10 (the counter) does not equal x6 (the desired position), loop again
+  bne x12, x11 loop4	# If x10 (the counter) does not equal x6 (the desired position), loop again
  or x5,x5,x7
  jalr x0, 0(x1)	# return
  
@@ -86,13 +86,13 @@ greaterThanSwap:
  loop5:
   slli x9, x9, 4  # Shift x7 left logically by 4 bits.
   addi x12,x12,1	  # Increment the counter
-  bne x12, x6, loop5	# If x10 (the counter) does not equal x6 (the desired position), loop again
+  bne x12, x11, loop5	# If x10 (the counter) does not equal x6 (the desired position), loop again
  or x3, x3, x9		# Adding value to x3.
  addi x12, x0, 0   # Clear the counter
  loop6:
   srli x7, x7, 4  # Shift x7 left logically by 4 bits.
   addi x12,x12,1	  # Increment the counter
-  bne x12, x6, loop6	# If x10 (the counter) does not equal x6 (the desired position), loop again
+  bne x12, x11, loop6	# If x10 (the counter) does not equal x6 (the desired position), loop again
  or x5,x5,x7
  jalr x0, 0(x1)	# return
  
