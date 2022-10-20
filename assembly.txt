@@ -20,6 +20,7 @@ main:
  jal  x1, setup
  jal x1, mask_one
  jal x1, mask_two
+ jal x1, swap
  #                       No instructions          No Cycles
  # jal  x1, srr_mask 	  	3						3
  # jal  x1, srli_mask		5						dependent on x4
@@ -50,9 +51,9 @@ mask_two:
  jalr x0, 0(x1)	# return
  
 swap:
- beq x10, x8, equalSwap # if x4 = x6
- blt x8, x10, lessThanSwap # if x4 < x6
- bge x8, x10, greaterThanSwap
+ beq x4, x6, equalSwap # if x4 = x6
+ blt x4, x6, lessThanSwap # if x4 < x6
+ bge x4, x6, greaterThanSwap
  
 equalSwap:	# if x4 = x6
  or x3, x3, x9
@@ -75,7 +76,7 @@ lessThanSwap:
  
  
 greaterThanSwap: 
- sub x11, x6, x4
+ sub x11, x4, x6
  addi x12, x0, 0   # Clear the counter
  loop5:
   slli x9, x9, 4  # Shift x7 left logically by 4 bits.
@@ -85,7 +86,7 @@ greaterThanSwap:
  loop6:
   srli x9, x9, 4  # Shift x7 left logically by 4 bits.
   addi x12,x12,1	  # Increment the counter
-  bne x10, x6, loop6	# If x10 (the counter) does not equal x6 (the desired position), loop again
+  bne x11, x12, loop6	# If x10 (the counter) does not equal x6 (the desired position), loop again
  jalr x0, 0(x1)	# return
  
  
@@ -95,6 +96,6 @@ setup:
  addi x5, x5, 0xce	# x5 = 0xb01df0ce
  addi x4, x0, 5		# Selecting position 5 word
  lui x3, 0xb1ade	# x3 = b1ade000
- addi x6, x0, 3		# Selecting position 3 word
+ addi x6, x0, 6		# Selecting position 3 word
  
  jalr x0, 0(x1)   # return
