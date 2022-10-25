@@ -2,7 +2,12 @@
 # swapX3DigitX4WithX5DigitX6
 # Anthony Bird, Luke Canny Oct 2022
 #
-# Function setup initialises x3, x4, x5, x6 registers
+# Registers:
+#	x3, x5 			= 	source registers
+#	x4, x6 			= 	specifies digit position to swap for x3 & x5 respectively
+#	x7, x9 			= 	mask for x3 & x5 respectively
+# 	x8, x10, x12 	= 	counters
+#	x11 			= 	holds difference between x4 & x6 values
 
 
 main:
@@ -10,77 +15,82 @@ main:
  jal x1, extract_value_one	# Extract nibble from the first value given (stored in x3)
  jal x1, extract_value_two	# Extract nibble from the second value given (stored in x5)
  jal x1, swap				# Swap the two nibbles
-# 1b: jal x0, 1b    		# loop forever (program complete)
 
 extract_value_one:
- addi x7,x0, 0xf			# Add f to x7 register
- addi x8, x0, 0   			# Clear the counter
+ addi x7,x0, 0xf			
+ addi x8, x0, 0   			
  beq x8, x4, skip1			# If the position selected is zero, skip logical shift loop.
- shiftLoop1:				# While loop (while counter != position value)
-  slli x7, x7, 4  			# Shift x7 left logically by 4 bits.
-  addi x8,x8,1	  			# Increment the counter
+ shiftLoop1:				
+  slli x7, x7, 4  			.
+  addi x8,x8,1	  			# Increment counter
   bne x8, x4, shiftLoop1	# If x8 (the counter) does not equal x4 (the desired position), loop again
- skip1:						# Skip label
- and x7, x7, x3				# x7 AND x3 copies out the nibble in position desired from x3 to x7.
- xor x3, x7, x3				# x7 OR x3 will set selected nibble to 0x0 in x3. 
- jalr x0, 0(x1)				# return
+ skip1:						
+ and x7, x7, x3				# mask x3 to x7
+ xor x3, x7, x3				# set selected nibble to 0x0 in x3. 
+ jalr x0, 0(x1)				
 
 extract_value_two:
- addi x9,x0, 0xf			# Add f to x9 register
- addi x10, x0, 0   			# Clear the counter
- beq x10, x6, skip2			# If the position selected is zero, skip logical shift loop.
- shiftLoop2:				# While loop (while counter != position value)
-  slli x9, x9, 4  			# Shift x9 left logically by 4 bits.
-  addi x10,x10,1			# Increment the counter
-  bne x10, x6, shiftLoop2	# If x10 (the counter) does not equal x6 (the desired position), loop again
- skip2:						# Skip label
- and x9, x9, x5				# x9 AND x5 should copy out the nibble in position desired from x5 to x9.
- xor x5, x9, x5				# x9 OR x5 will set selected nibble to 0x0 in x5. 
- jalr x0, 0(x1)				# return
+ addi x9,x0, 0xf			
+ addi x10, x0, 0   			
+ beq x10, x6, skip2			
+ shiftLoop2:				
+  slli x9, x9, 4  			
+  addi x10,x10,1			
+  bne x10, x6, shiftLoop2	
+ skip2:						
+ and x9, x9, x5				# mask x9 to x5
+ xor x5, x9, x5				# set selected nibble to 0x0 in x5. 
+ jalr x0, 0(x1)				
  
 swap:
  beq x4, x6, equalSwap 		# if x4 = x6
  blt x4, x6, lessThanSwap 	# if x4 < x6
  bge x4, x6, greaterThanSwap# if x4 > x6
  
-equalSwap:					# if x4 = x6
- or x3, x3, x9				# OR will insert nibble from x9 into x3. (x3 has a 0x0 in the destination)
- or x5, x5, x7				# OR will insert nibble from x7 into x5. (x5 has a 0x0 in the destination)
- jalr x0, 0(x1)				# return
+equalSwap:					
+ or x3, x3, x9				# insert value in x9 into x3
+ or x5, x5, x7				# insert value in x7 into x5
+ jalr x0, 0(x1)				
  
 lessThanSwap: 
  sub x11, x6, x4			# Subtract to get difference between two positions.
- addi x12, x0, 0   			# Clear the counter
- shiftLoop3:				# Loop label
-  srli x9, x9, 4  			# Shift x9 right logically by 4 bits.
-  addi x12,x12,1	  		# Increment the counter
-  bne x12, x11, shiftLoop3	# If x12 (the counter) does not equal x11 (the result of subtraction), loop again
- or x3, x3, x9				# Inserting nibble into x3.
  
- addi x12, x0, 0   			# Clear the counter
- shiftLoop4:				# Loop label
-  slli x7, x7, 4  			# Shift x7 left logically by 4 bits.
-  addi x12,x12,1	  		# Increment the counter
-  bne x12, x11 shiftLoop4	# If x12 (the counter) does not equal x11 (the result of subtraction), loop again
- or x5,x5,x7				# Inserting nibble into x5.
- jalr x0, 0(x1)				# return
+ # swapping x9 into x3
+ addi x12, x0, 0   			
+ shiftLoop3:				
+  srli x9, x9, 4  			
+  addi x12,x12,1	  		
+  bne x12, x11, shiftLoop3	
+ or x3, x3, x9				
+ 
+ # swapping x7 into x5
+ addi x12, x0, 0   			
+ shiftLoop4:				
+  slli x7, x7, 4  			
+  addi x12,x12,1	  		
+  bne x12, x11 shiftLoop4	
+ or x5,x5,x7				
+ jalr x0, 0(x1)				
  
 greaterThanSwap: 
- sub x11, x4, x6			# Subtract to get difference between two positions.
- addi x12, x0, 0   			# Clear the counter
- shiftLoop5:				# Loop label
-  slli x9, x9, 4  			# Shift x9 left logically by 4 bits.
-  addi x12,x12,1	  		# Increment the counter
-  bne x12, x11, shiftLoop5	# If x12 (the counter) does not equal x11 (the result of subtraction), loop again
- or x3, x3, x9				# Inserting nibble into x3.
+ sub x11, x4, x6	
  
- addi x12, x0, 0   			# clear the counter
- shiftLoop6:				# Loop label
-  srli x7, x7, 4  			# Shift x7 right logically by 4 bits.
-  addi x12,x12,1	  		# Increment the counter
-  bne x12, x11, shiftLoop6	# If x12 (the counter) does not equal x11 (result of subtraction), loop again
- or x5,x5,x7				# Inserting nibble into x5.
- jalr x0, 0(x1)				# return
+ # swapping x9 into x3 
+ addi x12, x0, 0   			
+ shiftLoop5:				
+  slli x9, x9, 4  			
+  addi x12,x12,1	  		
+  bne x12, x11, shiftLoop5	
+ or x3, x3, x9				
+ 
+ # swapping x7 into x5
+ addi x12, x0, 0   			
+ shiftLoop6:				
+  srli x7, x7, 4  			
+  addi x12,x12,1	  		
+  bne x12, x11, shiftLoop6	
+ or x5,x5,x7				
+ jalr x0, 0(x1)				
  
  
 setup:
@@ -90,4 +100,4 @@ setup:
  addi x5, x5, 0xce			# x5 = 0xb01df0ce
  addi x6, x0, 0				# Selecting position 0 nibble
  
- jalr x0, 0(x1)   # return
+ jalr x0, 0(x1)   
