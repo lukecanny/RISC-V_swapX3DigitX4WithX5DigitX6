@@ -21,7 +21,7 @@ extract_value_one:
  addi x8, x0, 0   			
  beq x8, x4, skip1			# If the position selected is zero, skip logical shift loop.
  shiftLoop1:				
-  slli x7, x7, 4  			.
+  slli x7, x7, 4
   addi x8,x8,1	  			# Increment counter
   bne x8, x4, shiftLoop1	# If x8 (the counter) does not equal x4 (the desired position), loop again
  skip1:						
