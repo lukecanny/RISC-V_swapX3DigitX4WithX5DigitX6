@@ -8,6 +8,12 @@
 #	x7, x9 			= 	mask for x3 & x5 respectively
 # 	x8, x10, x12 	= 	counters
 #	x11 			= 	holds difference between x4 & x6 values
+#
+# Note: 29/02/24
+#   Project was developed and tested using the Venus RISC-V simulator back in Oct '22 
+#   Project is now known working on the Dual-Core RISC-V project running on PYNQ Z2 FPGA 
+
+
 
 
 main:
