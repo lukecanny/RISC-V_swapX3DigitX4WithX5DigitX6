@@ -15,6 +15,7 @@ main:
  jal x1, extract_value_one	# Extract nibble from the first value given (stored in x3)
  jal x1, extract_value_two	# Extract nibble from the second value given (stored in x5)
  jal x1, swap				# Swap the two nibbles
+ # end: jal zero, end       # Uncomment for end loop (only for use on hardware, crashes venus sim)
 
 extract_value_one:
  addi x7,x0, 0xf			
